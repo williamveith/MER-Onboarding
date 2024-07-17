@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <base target="_top">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        form {
+            max-width: 90%;
+            max-height: 100%;
+            padding: 1%;
+            margin: 2% auto auto auto;
+            background-color: #fdf6ff;
+            border-radius: 8px;
+            box-shadow: 0px 2px 5px rgb(97, 76, 175);
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: right;
+        }
+
+        input {
+            width: 98%;
+            margin-bottom: 2%;
+            border-radius: 8px;
+            line-height: 20px;
+            box-shadow: 0px 2px 5px rgb(97, 76, 175);
+        }
+
+        .header {
+            text-align: center;
+            padding: 10px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .subheader {
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .button {
+            /* Adjust this dynamically based on the progress */
+            background-color: #5b04e7;
+            border-radius: 8px;
+            text-align: center;
+            line-height: 20px;
+            color: #fdf6ff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">Sheet:
+        <?= sheetName ?>
+    </div>
+    <div class="subheader">Enter:
+        <?= entryType ?>
+    </div>
+    <form id="textEntry" onsubmit="submitForm(); return false;">
+        <div>
+            <input type="text" id="inputText" name="inputText">
+        </div>
+        <div>
+            <input class="button" type="submit" value="Submit">
+        </div>
+    </form>
+    <script>
+        var serverFunctionName = '<?= functionName ?>';
+        function submitForm() {
+            const form = document.getElementById('textEntry');
+            const formData = {
+                inputText: form.inputText.value
+            };
+            google.script.run
+                .withSuccessHandler(function () {
+                    google.script.host.close();
+                })[serverFunctionName](formData);
+        }
+    </script>
+</body>
+
+</html>

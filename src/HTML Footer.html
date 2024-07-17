@@ -1,0 +1,32 @@
+<style>
+  .next,
+  .link-text {
+    display: none;
+  }
+</style>
+<div style="font-size: medium; margin: 0; padding: 0;">
+  <div class="progress-container"
+    style="position: relative; width: 600px; height: 20px; padding: 0; margin: 1.5rem auto 0.5rem auto; border: 1px solid #ccc; border-radius: 8px; line-height: 20px; background: linear-gradient(90deg, rgba(91,4,231,1) 0%, rgba(91,4,231,1) <?= (currentStep - 1) / totalSteps * 100 ?>%, rgba(240,240,240,1) <?= (currentStep - 1) / totalSteps * 100 ?>%);">
+    <div style="position: absolute; width: 100%; text-align: center; height: 100%;">
+      <span style="background-color: white; border-radius: 50px; padding: 0 10px;">Step
+        <?= currentStep - 1 ?> of
+        <?= totalSteps ?> Complete
+      </span>
+    </div>
+  </div>
+  <div id="checklist" style="max-width: 600px; max-height: 100%; padding: 1%; margin: 0.5% auto auto auto; background-color: #fdf6ff; border-radius: 8px; box-shadow: 0px 2px 5px rgb(97, 76, 175); flex-direction: column; align-items: flex-start; justify-content: right;">
+    <ol>
+      <? for (var i = 1; i <= totalSteps; i++) { ?>
+      <li class="item-<?= i ?>"
+        style="font-size: medium; margin-bottom: 5px; color: <?= i < currentStep ? '#008000' : i == currentStep ? '#0000ff' : 'black'; ?>">
+        <a class="link-text item-<?= i ?>" href="<?= links[i - 1] ?>"
+          style="text-decoration: none; color: <?= i < currentStep ? '#008000' : '#0000ff'; ?>;display: <?= (i <= currentStep || completeSteps.includes(i)) ? 'inline' : 'none'; ?>">
+          <span class="next item-<?= i ?>" style="display: <?= i == currentStep ? 'inline' : 'none'; ?>"><b><i>Next - </i></b></span>
+          <?= steps[i - 1] ?>
+        </a>
+        <span class="plain-text item-<?= i ?>" style="display: <?= !completeSteps.includes(i) && i != currentStep ? 'inline' : 'none'; ?>"><?= steps[i - 1] ?></span>
+      </li>
+      <? } ?>
+    </ol>
+  </div>
+</div>

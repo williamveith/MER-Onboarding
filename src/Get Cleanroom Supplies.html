@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Get Basket, Badge, Glasses & Notebook</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 600px;
+      max-height: 100%;
+      padding: 1%;
+      margin: 0.5% auto auto auto;
+      background-color: #fdf6ff;
+      border-radius: 8px;
+      box-shadow: 0px 2px 5px rgb(97, 76, 175);
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: right;
+    }
+
+    h1 {
+      align-self: center;
+      color: #333333;
+      margin-top: 0;
+    }
+
+    p {
+      color: #555555;
+      margin-left: 0;
+      text-align: left;
+      font-size: medium;
+    }
+
+    div.centered {
+      margin-top: 2%;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    div.bottom {
+      margin-top: 5%;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 12px 24px;
+      background-color: #5b04e7;
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: 4px;
+      transition: background-color 0.3s ease;
+      align-items: center;
+    }
+
+    .button:hover {
+      background-color: #2b0469;
+      /* Modified: Updated color code */
+    }
+
+    .author-link {
+      text-decoration: none;
+      color: #888888;
+      text-align: center;
+      font-size: small;
+      font-style: italic;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="centered">
+      <h1>Get Cleanroom Supplies</h1>
+    </div>
+    <p>Hello
+      <?= dynamicData.name ?>,
+    </p>
+    <p>Please come to the
+      Facilities Office (1.108) to get your cleanroom badge, basket, safety glasses, and notebook.</p>
+    <div class="centered">
+      <span class="button">
+        <a href="<?= dynamicData.url ?>" style="text-decoration: none; color: #ffffff;">Basket Registration</a>
+      </span>
+    </div>
+    <div class="centered bottom">
+      <span>
+                <a href="https://www.linkedin.com/in/william-veith/" class="author-link">Automated Email - Author
+                    William
+                    Veith</a>
+            </span>
+    </div>
+  </div>
+</body>
+
+</html>

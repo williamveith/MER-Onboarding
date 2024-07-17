@@ -1,0 +1,13 @@
+{
+  "name": "new-user-onboarding",
+  "version": "1.0.0",
+  "description": "The New User Onboarding App in Google Apps Script",
+  "scripts": {
+    "pull": "clasp pull"
+  },
+  "author": "William Veith",
+  "license": "ISC",
+  "devDependencies": {
+    "@google/clasp": "^2.4.2"
+  }
+}
