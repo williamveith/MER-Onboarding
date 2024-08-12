@@ -67,10 +67,41 @@ This system leverages a variety of Google Workspace tools, including Google Shee
 - **Updating Active Users**: Run the `updateActiveUsers` function manually or set a trigger for periodic updates.
 - **Basket Management**: Monitor the basket management functions via the dedicated Google Sheets and ensure that communications are correctly configured to notify users as needed.
 
-## Maintenance
+## Project Structure
 
-- Regularly check the system for updates.
-- Ensure that all integrations with Google Workspace products are functioning as expected.
-- Update scripts and configurations as necessary based on changes in lab management policies or Google Workspace updates.
-
-This README provides a detailed overview of the project's functionality and technical details, ensuring clarity and ease of use for system administrators and lab managers.
+```txt
+New User Onboarding
+├── README.md
+├── package-lock.json
+├── package.json
+└── src
+    ├── Access Control Request.html
+    ├── Active Users.js
+    ├── Badges.html
+    ├── Basket Assignment Email.html
+    ├── Basket Assignment.js
+    ├── Basket QR Code.html
+    ├── Classes.js
+    ├── Configurations.js
+    ├── Event Handler.js
+    ├── Failed Quiz.html
+    ├── Get Cleanroom Supplies.html
+    ├── HTML Footer.html
+    ├── Inactive Basket Email.html
+    ├── Lab Access & Sedona Registration.js
+    ├── Lab Access Account Confirmation.html
+    ├── Lab Access Calendar Event.html
+    ├── Lab Access Text.html
+    ├── MER Directory & Building Access Registration.js
+    ├── Make Badges.js
+    ├── No Baskets Available Email.html
+    ├── Passed Quiz.html
+    ├── Quiz OH 102.js
+    ├── Quiz.html
+    ├── Request Training.html
+    ├── Safety Training Requests.js
+    ├── Text Input.html
+    ├── Unit Test.js
+    ├── Utilities.js
+    └── appsscript.json
+```
