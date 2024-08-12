@@ -1,74 +1,76 @@
-# New User Onboarding App in Google Apps Script
+# MER User Onboarding
 
-This project sets up a Google Apps Script project using `clasp` for local development.
+## Overview
 
-## Steps to Create the Project
+The MER Onboarding System is an advanced automation platform specifically designed to manage and monitor user activities in a lab environment. This system seamlessly integrates user management by scheduling safety training, issuing calendar invites, administering knowledge tests, registering users in the MER directory, and managing digital account creation. It also handles operational tasks such as assigning and revoking basket assignments, generating cleanroom badges, and auto-purging inactive basket assignments to optimize resource utilization and ensure compliance with lab safety standards.
 
-1. **Create Project Directory and `src` Folder**
+### Key Functionalities
 
-   ```bash
-   mkdir src
-   ```
+- **Safety Training Scheduling**: Automatically schedules safety training sessions for users, ensuring compliance with lab safety standards.
+- **Calendar Invitations**: Sends out calendar invites for training sessions, efficiently managing attendance and scheduling.
+- **Knowledge Testing**: Administers tests to evaluate user knowledge on safety materials, essential for maintaining high safety standards.
+- **User Registration**: Registers users in the MER directory, which includes creating digital accounts necessary for accessing various lab resources.
+- **Basket Management**: Assigns and revokes basket assignments based on user needs and activities, optimizing resource allocation.
+- **Cleanroom Badge Creation**: Generates and assigns cleanroom badges, facilitating secure and authorized access to sensitive lab areas.
+- **Auto-purge of Inactive Assignments**: Automatically purges basket assignments based on user inactivity, helping to maintain an up-to-date user activity record and efficient use of resources.
 
-2. **Initialize npm Project**
+This system leverages a variety of Google Workspace tools, including Google Sheets, Google Drive, and Google Calendar, to streamline processes and enhance operational efficiency in lab environments. By automating these tasks, the system significantly reduces administrative overhead, improves accuracy, and ensures a high level of user compliance and safety in the lab.
 
-   ```bash
-   npm init -y
-   ```
+## Features
 
-3. **Install clasp as a Dev Dependency**
+### 1. Active User Compilation
 
-   ```bash
-   npm install @google/clasp --save-dev
-   ```
+- **Functionality**: This feature compiles a comprehensive list of active users based on their most recent activities over a defined period (default is the past six months).
+- **Implementation**: The system parses multiple inventory files stored in Google Drive, extracts relevant user activity data, and formats this data into a structured list.
+- **Output**: The results are formatted and stored in a designated Google Sheets tab, with extensive formatting to ensure readability and immediate usability.
 
-4. **Create `.claspignore` File**
+### 2. Basket Management
 
-   ```bash
-   touch .claspignore
-   ```
+- **Functionality**: Manages the assignment and tracking of baskets used in lab environments, which are essential for managing user access to resources.
+- **Implementation**: The script checks for user activity and updates basket allocation status accordingly. It handles basket assignments based on cleanroom access needs and updates existing assignments as required.
+- **Notifications**: In case of inactivity, the system sends automated purge warnings to users, prompting them to reactivate or return their baskets.
 
-5. **Edit `.claspignore` File**
+### 3. Automated Communications
 
-   Open `.claspignore` in a text editor and add the following lines:
+- **Functionality**: Sends out various automated communications related to user activities and statuses. This includes emails for lab access confirmation, basket assignments, and purge warnings.
+- **Implementation**: Utilizes Google Apps Script's email capabilities to send personalized messages based on user activity and status. It also manages SMS notifications through email to SMS gateways for immediate user alerts.
 
-   ```plaintext
-   **/**
-   !src/**
-   src/.clasp.json
-   ```
+### 4. Form Submission Handling
 
-6. **Login to clasp**
+- **Functionality**: Automates the response to Google Forms submissions related to lab access and safety training.
+- **Implementation**: Processes form submissions to update user records, assign resources, and trigger corresponding actions like sending emails or updating database entries.
 
-   ```bash
-   clasp login
-   ```
+### 5. QR Code Generation
 
-7. **Clone Existing Google Apps Script Project**
+- **Functionality**: Generates QR codes for easy access and identification of user baskets.
+- **Implementation**: Each assigned basket gets a unique QR code containing relevant user information, which is then printed and can be scanned for quick access.
 
-   Clone the project and place it inside the `src` folder:
+### 6. User Activity Monitoring
 
-   ```bash
-   clasp clone "1cdEMrYrx6QgMV9AG6pPuJvX2bG0Ijb8c7FSL2YMfo7QyD4xyAw-MH3tR" --rootDir ./src
-   ```
+- **Functionality**: Monitors and updates the active status of users based on predefined criteria and timelines.
+- **Implementation**: Reviews user activity logs to determine if users remain active within the grace period. Inactive users are automatically marked and notified.
 
-8. **Login Using the `clasp-credential.json`**
+## Technical Architecture
 
-   ```bash
-   clasp login --creds creds.json
-   ```
+- **Languages**: JavaScript (Google Apps Script)
+- **Platforms**: Google Workspace (Google Sheets, Google Drive, Google Calendar, Google Forms)
+- **Data Handling**: Script interacts with various Google Sheets to read and write data, utilizes Google Drive for file management, and integrates with Google Calendar for scheduling and event management.
 
-9. **Initialize Git Repository**
+## Configuration and Setup
 
-   ```bash
-   git init
-   git add .
-   git commit -m "First commit"
-   ```
+1. **Google Drive Setup**: Ensure all required folders and files are correctly set up in Google Drive.
+2. **Google Sheets Integration**: Set up the necessary sheets with the correct formats and permissions.
+3. **Scripts and Triggers**: Deploy the Google Apps Script and configure triggers for automated task execution.
 
-## Additional Notes
+## Usage
 
-- Ensure you have Node.js and npm installed.
-- The `creds.json` file should contain your clasp credentials for login.
+- **Updating Active Users**: Run the `updateActiveUsers` function manually or set a trigger for periodic updates.
+- **Basket Management**: Monitor the basket management functions via the dedicated Google Sheets and ensure that communications are correctly configured to notify users as needed.
 
-This setup helps you manage your Google Apps Script project efficiently using npm and clasp.
+## Maintenance
+
+- Regularly check the system for updates.
+- Ensure that all integrations with Google Workspace products are functioning as expected.
+- Update scripts and configurations as necessary based on changes in lab management policies or Google Workspace updates.
+
+This README provides a detailed overview of the project's functionality and technical details, ensuring clarity and ease of use for system administrators and lab managers.
