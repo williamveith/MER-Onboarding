@@ -2,8 +2,8 @@ function segfsaefrewfrqw(){
   console.log(Session.getActiveUser().getEmail())
 }
 function updatePaperAccessForm() {
-  const currentInstance = CurrentInstance.createEvent(CONFIGS.Sheet.Registration, 57)
-  createPaperBuildingAccessForm1(currentInstance);
+  const currentInstance = CurrentInstance.createEvent(CONFIGS.Sheet.Registration, 67)
+  createPaperBuildingAccessForm(currentInstance);
 }
 
 function createPaperBuildingAccessForm1(currentInstance) {

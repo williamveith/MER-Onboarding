@@ -1,4 +1,4 @@
 **/**
 !src/**
 src/.clasp.json
-*DS_Store*
+**/*.DS_Store
