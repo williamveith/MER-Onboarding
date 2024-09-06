@@ -6,6 +6,8 @@ function openUtilitiesWindow() {
   const ui = SpreadsheetApp.getUi();
   ui.createMenu('Utilities')
     .addItem('Create: Badges', 'uiOption_makeBadges')
+    .addSeparator()
+    .addItem('Update: Building Access Form', 'uiOption_createBuildingAccessForm')
     .addItem('Create: Lab Access Account', 'uiOption_createLabAccess')
     .addSeparator()
     .addItem('Email: Training Request Form', 'uiOption_sendRequestTrainingEmail')
@@ -26,6 +28,13 @@ function openUtilitiesWindow() {
  */
 function uiOption_makeBadges() {
   createUserInput("makeBadges");
+}
+
+/**
+ * Triggers a user input dialog for generating building access paper forms based on user data.
+ */
+function uiOption_createBuildingAccessForm() {
+  createUserInput("updatePaperAccessForm");
 }
 
 /**
@@ -111,6 +120,10 @@ function createUserInput(functionName) {
     case "makeBadges":
       sheetName = CONFIGS.Sheet.Registration;
       entryType = "Enter row(s) with info for badge(s)";
+      break;
+    case "updatePaperAccessForm":
+      sheetName = CONFIGS.Sheet.Registration;
+      entryType = "Enter row(s) with info for building access(s)";
       break;
     case "createOneOffLabAccess":
       sheetName = CONFIGS.Sheet.Registration;
@@ -200,6 +213,17 @@ function processEmailAddressInput(formObject) {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const emailAddresses = input.split(/[^a-zA-Z0-9.+_@-]+|,/g).filter(email => email !== '' && emailRegex.test(email));
   return [...new Set(emailAddresses)];
+}
+
+/**
+ * Updates the PDF building access form. This is used when the student ID's improperly covert to scientific notation.
+ * 
+ * @param {Object} formObject - The form object containing input specifying row numbers in the Registration sheet.
+ */
+function updatePaperAccessForm(formObject) {
+  const currentInstancesInput = processRowNumberInput(formObject, CONFIGS.Sheet.Registration);
+  const currentInstances = Array.isArray(currentInstancesInput) ? currentInstancesInput : [currentInstancesInput];
+  currentInstances.forEach(currentInstance => createPaperBuildingAccessForm(currentInstance))
 }
 
 /**

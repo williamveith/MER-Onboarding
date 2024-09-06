@@ -1,11 +1,6 @@
-function segfsaefrewfrqw(){
-  console.log(Session.getActiveUser().getEmail())
-}
-function updatePaperAccessForm() {
-  const currentInstance = CurrentInstance.createEvent(CONFIGS.Sheet.Registration, 67)
-  createPaperBuildingAccessForm(currentInstance);
-}
-
+/**
+ * Can't remember why I made this. Ill leave it here until I figure it out
+ */
 function createPaperBuildingAccessForm1(currentInstance) {
   /**
    * Formats a date string or Date object into a standard format.
