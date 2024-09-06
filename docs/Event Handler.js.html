@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Event Handler.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Event Handler.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Handles HTTP GET requests to perform various operations based on URL parameters.
+ * 
+ * @param {GoogleAppsScript.Events.DoGet} e - The event parameter containing the request parameters.
+ * @returns {GoogleAppsScript.Content.TextOutput|GoogleAppsScript.HTML.HtmlOutput} The response output.
+ * 
+ * @example
+ * // Retrieves HTML badges for the specified rows
+ * // URL: https://script.google.com/a/macros/utexas.edu/s/AKfycbxuqKwaTzlsJEb29qoOITdoA_g1PlzRzc14KGdbYKp3/dev?badges=2%2C3
+ * 
+ * @example
+ * // Simulates form submission and retrieves HTML badges for the specified EID
+ * // URL: https://script.google.com/a/macros/utexas.edu/s/AKfycbxuqKwaTzlsJEb29qoOITdoA_g1PlzRzc14KGdbYKp3/dev?content=badges&amp;eid=jl86947
+ * 
+ * @example
+ * // Returns a basket
+ * // URL: https://script.google.com/a/macros/utexas.edu/s/AKfycbxuqKwaTzlsJEb29qoOITdoA_g1PlzRzc14KGdbYKp3/dev?basket=N007%2CN180&amp;operation=return
+ * 
+ * @example
+ * // Sends a request training email
+ * // URL: https://script.google.com/a/macros/utexas.edu/s/AKfycbxuqKwaTzlsJEb29qoOITdoA_g1PlzRzc14KGdbYKp3/dev?content=sendRequestTrainingEmail&amp;email=williamveith@gmail.com
+ */
+function doGet(e) {
+  if (e.parameter.badges) {
+    return doGetHtmlBadges(e.parameter.badges)
+  }
+
+  if (e.parameter.content &amp;&amp; e.parameter.eid) {
+    try {
+      function simulatedFormSubmission(data, callback) {
+        const formObj = { inputText: data };
+        return callback(formObj);
+      }
+      switch (e.parameter.content) {
+        case "badges":
+          const rows = getBadgeRows(e.parameter.eid).join();
+          return simulatedFormSubmission(rows, doGetHtmlBadges);
+        default:
+          return ContentService.createTextOutput(`Failure: That functionality does not exist`);
+      }
+    } catch (error) {
+      return ContentService.createTextOutput(`Failure: There was an error running this module.\nError: ${error}`);
+    }
+  }
+
+  if (e.parameter.basket &amp;&amp; e.parameter.operation) {
+    switch (e.parameter.operation) {
+      case "return":
+        try {
+          returnBasket(e.parameter.basket)
+          return ContentService.createTextOutput("Success: Basket returned successfully.");
+        } catch (error) {
+          return ContentService.createTextOutput("Failure: Error returning basket - " + error.message);
+        }
+        break;
+    }
+    return
+  }
+
+  if (e.parameter.content &amp;&amp; e.parameter.email) {
+    function simulatedFormSubmission(data, callback) {
+      const formObj = { inputText: data };
+      callback(formObj);
+    }
+    const actions = {
+      "sendRequestTrainingEmail": sendRequestTrainingEmail,
+      "sendBuildingAccessEmail": sendBuildingAccessEmail,
+      "sendBasketRequestEmail": sendBasketRequestEmail
+    };
+
+    if (actions[e.parameter.content]) {
+      try {
+        simulatedFormSubmission(e.parameter.email, actions[e.parameter.content]);
+        return ContentService.createTextOutput("Success: Email sent");
+      } catch (error) {
+        return ContentService.createTextOutput(`Failure: There was an error running this module.\nError: ${error}`);
+      }
+    } else {
+      return ContentService.createTextOutput(`Failure: That functionality does not exist`);
+    }
+  }
+
+  return ContentService.createTextOutput(`Failure: Required parameters not provided`);
+}
+
+/**
+ * Handles the various actions triggered by a form submission event in Google Sheets, depending on the specific sheet configuration.
+ * This function routes the event to different processing functions based on the originating sheet's name.
+ * 
+ * Actions performed can include:
+ * - Adding training events.
+ * - Emailing quiz results.
+ * - Registering new lab access and creating associated accounts.
+ * - Handling lab equipment or basket assignments.
+ *
+ * @param {GoogleAppsScript.Events.SheetsOnFormSubmit} e - The event object that contains information about the submitted form,
+ * including data from the form, the associated spreadsheet, and the range where the data is recorded.
+ */
+function onFormSubmission(e) {
+  // Instantiate a new CurrentInstance object, freezing it to prevent modification
+  const event = Object.freeze(new CurrentInstance(e));
+
+  // Update the spreadsheet to reflect new form data
+  event.updateSpreadsheet();
+
+  // Determine actions based on the name of the sheet where the form is submitted
+  switch (event.sheet.getName()) {
+    case CONFIGS.Sheet.Training:
+      // Add form submission to training records
+      addToTrainingEvent(event);
+      break;
+
+    case CONFIGS.Sheet.Quiz:
+      // Send appropriate email based on quiz results
+      const emailTemplateName = passedQuiz(event) ? CONFIGS.Templates.QuizPass : CONFIGS.Templates.QuizFail;
+      emailQuizResults(event, emailTemplateName)
+      break;
+
+    case CONFIGS.Sheet.Registration:
+      // Handle new registrations and associated lab access
+      if (event.values["Create Lab Access &amp; Sedona Accounts"] == "Yes") {
+        submitLabAccessForm(event);
+      }
+      saveToCalendar(event);
+      const pdfFileBlob = createPaperBuildingAccessForm(event);
+      emailAccessControlForm(pdfFileBlob);
+      emailCleanroomSupplies(event);
+      break;
+
+    case CONFIGS.Sheet.LabAccess:
+      // Set up new lab access accounts and confirmations
+      const labAccess = new LabAccess(event);
+      saveLabAccessAccountCreateToCalendar(labAccess);
+      sendLabAccessText(labAccess);
+      sendLabAccessConfirmation(labAccess);
+      saveVCard(labAccess);
+      break;
+
+    case CONFIGS.Sheet.Basket:
+      // Assign baskets to new lab users &amp; emails building access form to Gerlinde
+      assignBasket(event);
+      sendBasketEmail(event);
+      break;
+  }
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BasketExemption.html">BasketExemption</a></li><li><a href="CredentialGenerator.html">CredentialGenerator</a></li><li><a href="CurrentInstance.html">CurrentInstance</a></li><li><a href="DataFormatter.html">DataFormatter</a></li><li><a href="EventTrigger.html">EventTrigger</a></li><li><a href="LabAccess.html">LabAccess</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CONFIGS">CONFIGS</a></li><li><a href="global.html#addBasketExemptions">addBasketExemptions</a></li><li><a href="global.html#addToTrainingEvent">addToTrainingEvent</a></li><li><a href="global.html#assignBasket">assignBasket</a></li><li><a href="global.html#createOneOffLabAccess">createOneOffLabAccess</a></li><li><a href="global.html#createPaperBuildingAccessForm">createPaperBuildingAccessForm</a></li><li><a href="global.html#createPaperBuildingAccessForm1">createPaperBuildingAccessForm1</a></li><li><a href="global.html#createUserInput">createUserInput</a></li><li><a href="global.html#doGet">doGet</a></li><li><a href="global.html#doGetHtmlBadges">doGetHtmlBadges</a></li><li><a href="global.html#emailAccessControlForm">emailAccessControlForm</a></li><li><a href="global.html#emailCleanroomSupplies">emailCleanroomSupplies</a></li><li><a href="global.html#emailQuizResults">emailQuizResults</a></li><li><a href="global.html#generateBasketQRCode">generateBasketQRCode</a></li><li><a href="global.html#getAllStudents">getAllStudents</a></li><li><a href="global.html#getBadgeRows">getBadgeRows</a></li><li><a href="global.html#makeBadgeString">makeBadgeString</a></li><li><a href="global.html#makeBadges">makeBadges</a></li><li><a href="global.html#onFormSubmission">onFormSubmission</a></li><li><a href="global.html#openUtilitiesWindow">openUtilitiesWindow</a></li><li><a href="global.html#passedQuiz">passedQuiz</a></li><li><a href="global.html#processEmailAddressInput">processEmailAddressInput</a></li><li><a href="global.html#processRowNumberInput">processRowNumberInput</a></li><li><a href="global.html#returnBasket">returnBasket</a></li><li><a href="global.html#returnBaskets">returnBaskets</a></li><li><a href="global.html#saveLabAccessAccountCreateToCalendar">saveLabAccessAccountCreateToCalendar</a></li><li><a href="global.html#saveToCalendar">saveToCalendar</a></li><li><a href="global.html#saveVCard">saveVCard</a></li><li><a href="global.html#sendBasketEmail">sendBasketEmail</a></li><li><a href="global.html#sendBasketRequestEmail">sendBasketRequestEmail</a></li><li><a href="global.html#sendBuildingAccessEmail">sendBuildingAccessEmail</a></li><li><a href="global.html#sendLabAccessConfirmation">sendLabAccessConfirmation</a></li><li><a href="global.html#sendLabAccessText">sendLabAccessText</a></li><li><a href="global.html#sendOneOffQuizEmail">sendOneOffQuizEmail</a></li><li><a href="global.html#sendPurgeWarningForm">sendPurgeWarningForm</a></li><li><a href="global.html#sendRequestTrainingEmail">sendRequestTrainingEmail</a></li><li><a href="global.html#sendTrainingGroupQuiz">sendTrainingGroupQuiz</a></li><li><a href="global.html#sendTrainingRequestEmailTemplate">sendTrainingRequestEmailTemplate</a></li><li><a href="global.html#submitLabAccessForm">submitLabAccessForm</a></li><li><a href="global.html#uiOption_addBasketExemptions">uiOption_addBasketExemptions</a></li><li><a href="global.html#uiOption_createBuildingAccessForm">uiOption_createBuildingAccessForm</a></li><li><a href="global.html#uiOption_createLabAccess">uiOption_createLabAccess</a></li><li><a href="global.html#uiOption_makeBadges">uiOption_makeBadges</a></li><li><a href="global.html#uiOption_returnBaskets">uiOption_returnBaskets</a></li><li><a href="global.html#uiOption_sendBasketRequestEmail">uiOption_sendBasketRequestEmail</a></li><li><a href="global.html#uiOption_sendBuildingAccessEmail">uiOption_sendBuildingAccessEmail</a></li><li><a href="global.html#uiOption_sendQuizEmail">uiOption_sendQuizEmail</a></li><li><a href="global.html#uiOption_sendRequestTrainingEmail">uiOption_sendRequestTrainingEmail</a></li><li><a href="global.html#uiOption_sendTrainingRequestEmailTemplate">uiOption_sendTrainingRequestEmailTemplate</a></li><li><a href="global.html#uiOption_updateActiveUsers">uiOption_updateActiveUsers</a></li><li><a href="global.html#updateActiveUsers">updateActiveUsers</a></li><li><a href="global.html#updateBasketActiveUserStatus">updateBasketActiveUserStatus</a></li><li><a href="global.html#updatePaperAccessForm">updatePaperAccessForm</a></li><li><a href="global.html#updateTrainingDropdown">updateTrainingDropdown</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a>
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

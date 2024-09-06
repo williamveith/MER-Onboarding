@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Home</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Home</h1>
+
+    
+
+
+
+    
+
+
+    <h3> </h3>
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <section>
+        <article><h1>MER User Onboarding</h1>
+<h2>Overview</h2>
+<p>The MER Onboarding System is an advanced automation platform specifically designed to manage and monitor user activities in a lab environment. This system seamlessly integrates user management by scheduling safety training, issuing calendar invites, administering knowledge tests, registering users in the MER directory, and managing digital account creation. It also handles operational tasks such as assigning and revoking basket assignments, generating cleanroom badges, and auto-purging inactive basket assignments to optimize resource utilization and ensure compliance with lab safety standards.</p>
+<h3>Key Functionalities</h3>
+<ul>
+<li><strong>Safety Training Scheduling</strong>: Automatically schedules safety training sessions for users, ensuring compliance with lab safety standards.</li>
+<li><strong>Calendar Invitations</strong>: Sends out calendar invites for training sessions, efficiently managing attendance and scheduling.</li>
+<li><strong>Knowledge Testing</strong>: Administers tests to evaluate user knowledge on safety materials, essential for maintaining high safety standards.</li>
+<li><strong>User Registration</strong>: Registers users in the MER directory, which includes creating digital accounts necessary for accessing various lab resources.</li>
+<li><strong>Basket Management</strong>: Assigns and revokes basket assignments based on user needs and activities, optimizing resource allocation.</li>
+<li><strong>Cleanroom Badge Creation</strong>: Generates and assigns cleanroom badges, facilitating secure and authorized access to sensitive lab areas.</li>
+<li><strong>Auto-purge of Inactive Assignments</strong>: Automatically purges basket assignments based on user inactivity, helping to maintain an up-to-date user activity record and efficient use of resources.</li>
+</ul>
+<p>This system leverages a variety of Google Workspace tools, including Google Sheets, Google Drive, and Google Calendar, to streamline processes and enhance operational efficiency in lab environments. By automating these tasks, the system significantly reduces administrative overhead, improves accuracy, and ensures a high level of user compliance and safety in the lab.</p>
+<h2>Features</h2>
+<h3>1. Active User Compilation</h3>
+<ul>
+<li><strong>Functionality</strong>: This feature compiles a comprehensive list of active users based on their most recent activities over a defined period (default is the past six months).</li>
+<li><strong>Implementation</strong>: The system parses multiple inventory files stored in Google Drive, extracts relevant user activity data, and formats this data into a structured list.</li>
+<li><strong>Output</strong>: The results are formatted and stored in a designated Google Sheets tab, with extensive formatting to ensure readability and immediate usability.</li>
+</ul>
+<h3>2. Basket Management</h3>
+<ul>
+<li><strong>Functionality</strong>: Manages the assignment and tracking of baskets used in lab environments, which are essential for managing user access to resources.</li>
+<li><strong>Implementation</strong>: The script checks for user activity and updates basket allocation status accordingly. It handles basket assignments based on cleanroom access needs and updates existing assignments as required.</li>
+<li><strong>Notifications</strong>: In case of inactivity, the system sends automated purge warnings to users, prompting them to reactivate or return their baskets.</li>
+</ul>
+<h3>3. Automated Communications</h3>
+<ul>
+<li><strong>Functionality</strong>: Sends out various automated communications related to user activities and statuses. This includes emails for lab access confirmation, basket assignments, and purge warnings.</li>
+<li><strong>Implementation</strong>: Utilizes Google Apps Script's email capabilities to send personalized messages based on user activity and status. It also manages SMS notifications through email to SMS gateways for immediate user alerts.</li>
+</ul>
+<h3>4. Form Submission Handling</h3>
+<ul>
+<li><strong>Functionality</strong>: Automates the response to Google Forms submissions related to lab access and safety training.</li>
+<li><strong>Implementation</strong>: Processes form submissions to update user records, assign resources, and trigger corresponding actions like sending emails or updating database entries.</li>
+</ul>
+<h3>5. QR Code Generation</h3>
+<ul>
+<li><strong>Functionality</strong>: Generates QR codes for easy access and identification of user baskets.</li>
+<li><strong>Implementation</strong>: Each assigned basket gets a unique QR code containing relevant user information, which is then printed and can be scanned for quick access.</li>
+</ul>
+<h3>6. User Activity Monitoring</h3>
+<ul>
+<li><strong>Functionality</strong>: Monitors and updates the active status of users based on predefined criteria and timelines.</li>
+<li><strong>Implementation</strong>: Reviews user activity logs to determine if users remain active within the grace period. Inactive users are automatically marked and notified.</li>
+</ul>
+<h2>Technical Architecture</h2>
+<ul>
+<li><strong>Languages</strong>: JavaScript (Google Apps Script)</li>
+<li><strong>Platforms</strong>: Google Workspace (Google Sheets, Google Drive, Google Calendar, Google Forms)</li>
+<li><strong>Data Handling</strong>: Script interacts with various Google Sheets to read and write data, utilizes Google Drive for file management, and integrates with Google Calendar for scheduling and event management.</li>
+</ul>
+<h2>Configuration and Setup</h2>
+<ol>
+<li><strong>Google Drive Setup</strong>: Ensure all required folders and files are correctly set up in Google Drive.</li>
+<li><strong>Google Sheets Integration</strong>: Set up the necessary sheets with the correct formats and permissions.</li>
+<li><strong>Scripts and Triggers</strong>: Deploy the Google Apps Script and configure triggers for automated task execution.</li>
+</ol>
+<h2>Usage</h2>
+<ul>
+<li><strong>Updating Active Users</strong>: Run the <code>updateActiveUsers</code> function manually or set a trigger for periodic updates.</li>
+<li><strong>Basket Management</strong>: Monitor the basket management functions via the dedicated Google Sheets and ensure that communications are correctly configured to notify users as needed.</li>
+</ul>
+<h2>Project Structure</h2>
+<pre class="prettyprint source lang-txt"><code>New User Onboarding
+├── README.md
+├── package-lock.json
+├── package.json
+└── src
+    ├── Access Control Request.html
+    ├── Active Users.js
+    ├── Badges.html
+    ├── Basket Assignment Email.html
+    ├── Basket Assignment.js
+    ├── Basket QR Code.html
+    ├── Classes.js
+    ├── Configurations.js
+    ├── Event Handler.js
+    ├── Failed Quiz.html
+    ├── Get Cleanroom Supplies.html
+    ├── HTML Footer.html
+    ├── Inactive Basket Email.html
+    ├── Lab Access & Sedona Registration.js
+    ├── Lab Access Account Confirmation.html
+    ├── Lab Access Calendar Event.html
+    ├── Lab Access Text.html
+    ├── MER Directory & Building Access Registration.js
+    ├── Make Badges.js
+    ├── No Baskets Available Email.html
+    ├── Passed Quiz.html
+    ├── Quiz OH 102.js
+    ├── Quiz.html
+    ├── Request Training.html
+    ├── Safety Training Requests.js
+    ├── Text Input.html
+    ├── Unit Test.js
+    ├── Utilities.js
+    └── appsscript.json
+</code></pre></article>
+    </section>
+
+
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BasketExemption.html">BasketExemption</a></li><li><a href="CredentialGenerator.html">CredentialGenerator</a></li><li><a href="CurrentInstance.html">CurrentInstance</a></li><li><a href="DataFormatter.html">DataFormatter</a></li><li><a href="EventTrigger.html">EventTrigger</a></li><li><a href="LabAccess.html">LabAccess</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CONFIGS">CONFIGS</a></li><li><a href="global.html#addBasketExemptions">addBasketExemptions</a></li><li><a href="global.html#addToTrainingEvent">addToTrainingEvent</a></li><li><a href="global.html#assignBasket">assignBasket</a></li><li><a href="global.html#createOneOffLabAccess">createOneOffLabAccess</a></li><li><a href="global.html#createPaperBuildingAccessForm">createPaperBuildingAccessForm</a></li><li><a href="global.html#createPaperBuildingAccessForm1">createPaperBuildingAccessForm1</a></li><li><a href="global.html#createUserInput">createUserInput</a></li><li><a href="global.html#doGet">doGet</a></li><li><a href="global.html#doGetHtmlBadges">doGetHtmlBadges</a></li><li><a href="global.html#emailAccessControlForm">emailAccessControlForm</a></li><li><a href="global.html#emailCleanroomSupplies">emailCleanroomSupplies</a></li><li><a href="global.html#emailQuizResults">emailQuizResults</a></li><li><a href="global.html#generateBasketQRCode">generateBasketQRCode</a></li><li><a href="global.html#getAllStudents">getAllStudents</a></li><li><a href="global.html#getBadgeRows">getBadgeRows</a></li><li><a href="global.html#makeBadgeString">makeBadgeString</a></li><li><a href="global.html#makeBadges">makeBadges</a></li><li><a href="global.html#onFormSubmission">onFormSubmission</a></li><li><a href="global.html#openUtilitiesWindow">openUtilitiesWindow</a></li><li><a href="global.html#passedQuiz">passedQuiz</a></li><li><a href="global.html#processEmailAddressInput">processEmailAddressInput</a></li><li><a href="global.html#processRowNumberInput">processRowNumberInput</a></li><li><a href="global.html#returnBasket">returnBasket</a></li><li><a href="global.html#returnBaskets">returnBaskets</a></li><li><a href="global.html#saveLabAccessAccountCreateToCalendar">saveLabAccessAccountCreateToCalendar</a></li><li><a href="global.html#saveToCalendar">saveToCalendar</a></li><li><a href="global.html#saveVCard">saveVCard</a></li><li><a href="global.html#sendBasketEmail">sendBasketEmail</a></li><li><a href="global.html#sendBasketRequestEmail">sendBasketRequestEmail</a></li><li><a href="global.html#sendBuildingAccessEmail">sendBuildingAccessEmail</a></li><li><a href="global.html#sendLabAccessConfirmation">sendLabAccessConfirmation</a></li><li><a href="global.html#sendLabAccessText">sendLabAccessText</a></li><li><a href="global.html#sendOneOffQuizEmail">sendOneOffQuizEmail</a></li><li><a href="global.html#sendPurgeWarningForm">sendPurgeWarningForm</a></li><li><a href="global.html#sendRequestTrainingEmail">sendRequestTrainingEmail</a></li><li><a href="global.html#sendTrainingGroupQuiz">sendTrainingGroupQuiz</a></li><li><a href="global.html#sendTrainingRequestEmailTemplate">sendTrainingRequestEmailTemplate</a></li><li><a href="global.html#submitLabAccessForm">submitLabAccessForm</a></li><li><a href="global.html#uiOption_addBasketExemptions">uiOption_addBasketExemptions</a></li><li><a href="global.html#uiOption_createBuildingAccessForm">uiOption_createBuildingAccessForm</a></li><li><a href="global.html#uiOption_createLabAccess">uiOption_createLabAccess</a></li><li><a href="global.html#uiOption_makeBadges">uiOption_makeBadges</a></li><li><a href="global.html#uiOption_returnBaskets">uiOption_returnBaskets</a></li><li><a href="global.html#uiOption_sendBasketRequestEmail">uiOption_sendBasketRequestEmail</a></li><li><a href="global.html#uiOption_sendBuildingAccessEmail">uiOption_sendBuildingAccessEmail</a></li><li><a href="global.html#uiOption_sendQuizEmail">uiOption_sendQuizEmail</a></li><li><a href="global.html#uiOption_sendRequestTrainingEmail">uiOption_sendRequestTrainingEmail</a></li><li><a href="global.html#uiOption_sendTrainingRequestEmailTemplate">uiOption_sendTrainingRequestEmailTemplate</a></li><li><a href="global.html#uiOption_updateActiveUsers">uiOption_updateActiveUsers</a></li><li><a href="global.html#updateActiveUsers">updateActiveUsers</a></li><li><a href="global.html#updateBasketActiveUserStatus">updateBasketActiveUserStatus</a></li><li><a href="global.html#updatePaperAccessForm">updatePaperAccessForm</a></li><li><a href="global.html#updateTrainingDropdown">updateTrainingDropdown</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a>
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

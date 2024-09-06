@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Class: DataFormatter</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Class: DataFormatter</h1>
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2><span class="attribs"><span class="type-signature"></span></span>DataFormatter<span class="signature">(entry)</span><span class="type-signature"></span></h2>
+        
+            <div class="class-description">Class to format data values based on predefined or dynamic rules and apply formatting to Google Sheets.</div>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+    
+    <h2>Constructor</h2>
+    
+
+    
+    <h4 class="name" id="DataFormatter"><span class="type-signature"></span>new DataFormatter<span class="signature">(entry)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Constructs an instance of DataFormatter.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>entry</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">An object containing the key and value to be formatted.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Classes.js.html">Classes.js</a>, <a href="Classes.js.html#line137">line 137</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id="_textStyle"><span class="type-signature"></span>_textStyle<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    TextStyle builder to set common text attributes.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Classes.js.html">Classes.js</a>, <a href="Classes.js.html#line146">line 146</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="numberFormat"><span class="type-signature"></span>numberFormat<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Returns the number format to be applied to the Google Sheets cell.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Classes.js.html">Classes.js</a>, <a href="Classes.js.html#line254">line 254</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="richTextValue"><span class="type-signature"></span>richTextValue<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Returns the rich text value for the Google Sheets cell.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Classes.js.html">Classes.js</a>, <a href="Classes.js.html#line261">line 261</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="url"><span class="type-signature"></span>url<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Constructs and returns a URL if a URL template is provided.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Classes.js.html">Classes.js</a>, <a href="Classes.js.html#line238">line 238</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="useFormattedValue"><span class="type-signature"></span>useFormattedValue<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Determines if the formatted value should be used.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Classes.js.html">Classes.js</a>, <a href="Classes.js.html#line231">line 231</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="value"><span class="type-signature"></span>value<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Lazy-loads and returns the formatted value based on the header type and raw value.
+Applies custom logic based on the header to determine how the value should be formatted.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Classes.js.html">Classes.js</a>, <a href="Classes.js.html#line166">line 166</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="formatPhoneNumber"><span class="type-signature"></span>formatPhoneNumber<span class="signature">(number)</span><span class="type-signature"> &rarr; {string}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Formats a raw phone number into a standard US phone format.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>number</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+|
+
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The raw phone number.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Classes.js.html">Classes.js</a>, <a href="Classes.js.html#line292">line 292</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    The formatted phone number.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="formatTimeStamp"><span class="type-signature"></span>formatTimeStamp<span class="signature">(date)</span><span class="type-signature"> &rarr; {string}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Formats a raw timestamp into a human-readable date-time format.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>date</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+|
+
+<span class="param-type">Date</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The raw date.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Classes.js.html">Classes.js</a>, <a href="Classes.js.html#line305">line 305</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    The formatted timestamp.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="setValue"><span class="type-signature"></span>setValue<span class="signature">(range)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Sets the value and formatting options on a given Google Sheets range.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>range</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">GoogleAppsScript.Spreadsheet.Range</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The cell range to format.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Classes.js.html">Classes.js</a>, <a href="Classes.js.html#line315">line 315</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="textTransformCapitalize"><span class="type-signature"></span>textTransformCapitalize<span class="signature">(str)</span><span class="type-signature"> &rarr; {string}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Capitalizes each part of the string, used primarily for names.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>str</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The string to capitalize.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Classes.js.html">Classes.js</a>, <a href="Classes.js.html#line279">line 279</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    The capitalized string.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BasketExemption.html">BasketExemption</a></li><li><a href="CredentialGenerator.html">CredentialGenerator</a></li><li><a href="CurrentInstance.html">CurrentInstance</a></li><li><a href="DataFormatter.html">DataFormatter</a></li><li><a href="EventTrigger.html">EventTrigger</a></li><li><a href="LabAccess.html">LabAccess</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CONFIGS">CONFIGS</a></li><li><a href="global.html#addBasketExemptions">addBasketExemptions</a></li><li><a href="global.html#addToTrainingEvent">addToTrainingEvent</a></li><li><a href="global.html#assignBasket">assignBasket</a></li><li><a href="global.html#createOneOffLabAccess">createOneOffLabAccess</a></li><li><a href="global.html#createPaperBuildingAccessForm">createPaperBuildingAccessForm</a></li><li><a href="global.html#createPaperBuildingAccessForm1">createPaperBuildingAccessForm1</a></li><li><a href="global.html#createUserInput">createUserInput</a></li><li><a href="global.html#doGet">doGet</a></li><li><a href="global.html#doGetHtmlBadges">doGetHtmlBadges</a></li><li><a href="global.html#emailAccessControlForm">emailAccessControlForm</a></li><li><a href="global.html#emailCleanroomSupplies">emailCleanroomSupplies</a></li><li><a href="global.html#emailQuizResults">emailQuizResults</a></li><li><a href="global.html#generateBasketQRCode">generateBasketQRCode</a></li><li><a href="global.html#getAllStudents">getAllStudents</a></li><li><a href="global.html#getBadgeRows">getBadgeRows</a></li><li><a href="global.html#makeBadgeString">makeBadgeString</a></li><li><a href="global.html#makeBadges">makeBadges</a></li><li><a href="global.html#onFormSubmission">onFormSubmission</a></li><li><a href="global.html#openUtilitiesWindow">openUtilitiesWindow</a></li><li><a href="global.html#passedQuiz">passedQuiz</a></li><li><a href="global.html#processEmailAddressInput">processEmailAddressInput</a></li><li><a href="global.html#processRowNumberInput">processRowNumberInput</a></li><li><a href="global.html#returnBasket">returnBasket</a></li><li><a href="global.html#returnBaskets">returnBaskets</a></li><li><a href="global.html#saveLabAccessAccountCreateToCalendar">saveLabAccessAccountCreateToCalendar</a></li><li><a href="global.html#saveToCalendar">saveToCalendar</a></li><li><a href="global.html#saveVCard">saveVCard</a></li><li><a href="global.html#sendBasketEmail">sendBasketEmail</a></li><li><a href="global.html#sendBasketRequestEmail">sendBasketRequestEmail</a></li><li><a href="global.html#sendBuildingAccessEmail">sendBuildingAccessEmail</a></li><li><a href="global.html#sendLabAccessConfirmation">sendLabAccessConfirmation</a></li><li><a href="global.html#sendLabAccessText">sendLabAccessText</a></li><li><a href="global.html#sendOneOffQuizEmail">sendOneOffQuizEmail</a></li><li><a href="global.html#sendPurgeWarningForm">sendPurgeWarningForm</a></li><li><a href="global.html#sendRequestTrainingEmail">sendRequestTrainingEmail</a></li><li><a href="global.html#sendTrainingGroupQuiz">sendTrainingGroupQuiz</a></li><li><a href="global.html#sendTrainingRequestEmailTemplate">sendTrainingRequestEmailTemplate</a></li><li><a href="global.html#submitLabAccessForm">submitLabAccessForm</a></li><li><a href="global.html#uiOption_addBasketExemptions">uiOption_addBasketExemptions</a></li><li><a href="global.html#uiOption_createBuildingAccessForm">uiOption_createBuildingAccessForm</a></li><li><a href="global.html#uiOption_createLabAccess">uiOption_createLabAccess</a></li><li><a href="global.html#uiOption_makeBadges">uiOption_makeBadges</a></li><li><a href="global.html#uiOption_returnBaskets">uiOption_returnBaskets</a></li><li><a href="global.html#uiOption_sendBasketRequestEmail">uiOption_sendBasketRequestEmail</a></li><li><a href="global.html#uiOption_sendBuildingAccessEmail">uiOption_sendBuildingAccessEmail</a></li><li><a href="global.html#uiOption_sendQuizEmail">uiOption_sendQuizEmail</a></li><li><a href="global.html#uiOption_sendRequestTrainingEmail">uiOption_sendRequestTrainingEmail</a></li><li><a href="global.html#uiOption_sendTrainingRequestEmailTemplate">uiOption_sendTrainingRequestEmailTemplate</a></li><li><a href="global.html#uiOption_updateActiveUsers">uiOption_updateActiveUsers</a></li><li><a href="global.html#updateActiveUsers">updateActiveUsers</a></li><li><a href="global.html#updateBasketActiveUserStatus">updateBasketActiveUserStatus</a></li><li><a href="global.html#updatePaperAccessForm">updatePaperAccessForm</a></li><li><a href="global.html#updateTrainingDropdown">updateTrainingDropdown</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a>
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

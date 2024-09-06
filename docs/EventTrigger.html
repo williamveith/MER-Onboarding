@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Class: EventTrigger</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Class: EventTrigger</h1>
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2><span class="attribs"><span class="type-signature"></span></span>EventTrigger<span class="signature">(calendarEvent)</span><span class="type-signature"></span></h2>
+        
+            <div class="class-description">Manages the creation and destruction of script triggers based on calendar events.</div>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+    
+    <h2>Constructor</h2>
+    
+
+    
+    <h4 class="name" id="EventTrigger"><span class="type-signature"></span>new EventTrigger<span class="signature">(calendarEvent)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Constructs an instance of EventTrigger.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>calendarEvent</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">GoogleAppsScript.Calendar.CalendarEvent</span>
+|
+
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The calendar event to base the trigger on. Can be from CalendarApp or the Calendar API.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Classes.js.html">Classes.js</a>, <a href="Classes.js.html#line325">line 325</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id="endTime"><span class="type-signature"></span>endTime<span class="type-signature"> :number</span></h4>
+
+
+
+
+<div class="description">
+    The millisecond timestamp when the calendar event ends.
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">number</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Classes.js.html">Classes.js</a>, <a href="Classes.js.html#line340">line 340</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="exists"><span class="type-signature"></span>exists<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Checks if a trigger already exists for this calendar event.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Classes.js.html">Classes.js</a>, <a href="Classes.js.html#line353">line 353</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="key"><span class="type-signature"></span>key<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Retrieves the unique key for the current event based on its end time.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Classes.js.html">Classes.js</a>, <a href="Classes.js.html#line346">line 346</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="scriptProperties"><span class="type-signature"></span>scriptProperties<span class="type-signature"> :GoogleAppsScript.Properties.Properties</span></h4>
+
+
+
+
+<div class="description">
+    Access to script properties for storing and retrieving custom event data.
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">GoogleAppsScript.Properties.Properties</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Classes.js.html">Classes.js</a>, <a href="Classes.js.html#line335">line 335</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="create"><span class="type-signature"></span>create<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Creates a new trigger for the calendar event if it doesn't already exist.
+The trigger is set to execute a function specified in CONFIGS.Triggers.QuizSend after the event ends.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Classes.js.html">Classes.js</a>, <a href="Classes.js.html#line360">line 360</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="destroy"><span class="type-signature"></span>destroy<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Destroys the existing trigger associated with the calendar event, if any.
+It removes the trigger from the project and deletes the associated property.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Classes.js.html">Classes.js</a>, <a href="Classes.js.html#line374">line 374</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BasketExemption.html">BasketExemption</a></li><li><a href="CredentialGenerator.html">CredentialGenerator</a></li><li><a href="CurrentInstance.html">CurrentInstance</a></li><li><a href="DataFormatter.html">DataFormatter</a></li><li><a href="EventTrigger.html">EventTrigger</a></li><li><a href="LabAccess.html">LabAccess</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CONFIGS">CONFIGS</a></li><li><a href="global.html#addBasketExemptions">addBasketExemptions</a></li><li><a href="global.html#addToTrainingEvent">addToTrainingEvent</a></li><li><a href="global.html#assignBasket">assignBasket</a></li><li><a href="global.html#createOneOffLabAccess">createOneOffLabAccess</a></li><li><a href="global.html#createPaperBuildingAccessForm">createPaperBuildingAccessForm</a></li><li><a href="global.html#createPaperBuildingAccessForm1">createPaperBuildingAccessForm1</a></li><li><a href="global.html#createUserInput">createUserInput</a></li><li><a href="global.html#doGet">doGet</a></li><li><a href="global.html#doGetHtmlBadges">doGetHtmlBadges</a></li><li><a href="global.html#emailAccessControlForm">emailAccessControlForm</a></li><li><a href="global.html#emailCleanroomSupplies">emailCleanroomSupplies</a></li><li><a href="global.html#emailQuizResults">emailQuizResults</a></li><li><a href="global.html#generateBasketQRCode">generateBasketQRCode</a></li><li><a href="global.html#getAllStudents">getAllStudents</a></li><li><a href="global.html#getBadgeRows">getBadgeRows</a></li><li><a href="global.html#makeBadgeString">makeBadgeString</a></li><li><a href="global.html#makeBadges">makeBadges</a></li><li><a href="global.html#onFormSubmission">onFormSubmission</a></li><li><a href="global.html#openUtilitiesWindow">openUtilitiesWindow</a></li><li><a href="global.html#passedQuiz">passedQuiz</a></li><li><a href="global.html#processEmailAddressInput">processEmailAddressInput</a></li><li><a href="global.html#processRowNumberInput">processRowNumberInput</a></li><li><a href="global.html#returnBasket">returnBasket</a></li><li><a href="global.html#returnBaskets">returnBaskets</a></li><li><a href="global.html#saveLabAccessAccountCreateToCalendar">saveLabAccessAccountCreateToCalendar</a></li><li><a href="global.html#saveToCalendar">saveToCalendar</a></li><li><a href="global.html#saveVCard">saveVCard</a></li><li><a href="global.html#sendBasketEmail">sendBasketEmail</a></li><li><a href="global.html#sendBasketRequestEmail">sendBasketRequestEmail</a></li><li><a href="global.html#sendBuildingAccessEmail">sendBuildingAccessEmail</a></li><li><a href="global.html#sendLabAccessConfirmation">sendLabAccessConfirmation</a></li><li><a href="global.html#sendLabAccessText">sendLabAccessText</a></li><li><a href="global.html#sendOneOffQuizEmail">sendOneOffQuizEmail</a></li><li><a href="global.html#sendPurgeWarningForm">sendPurgeWarningForm</a></li><li><a href="global.html#sendRequestTrainingEmail">sendRequestTrainingEmail</a></li><li><a href="global.html#sendTrainingGroupQuiz">sendTrainingGroupQuiz</a></li><li><a href="global.html#sendTrainingRequestEmailTemplate">sendTrainingRequestEmailTemplate</a></li><li><a href="global.html#submitLabAccessForm">submitLabAccessForm</a></li><li><a href="global.html#uiOption_addBasketExemptions">uiOption_addBasketExemptions</a></li><li><a href="global.html#uiOption_createBuildingAccessForm">uiOption_createBuildingAccessForm</a></li><li><a href="global.html#uiOption_createLabAccess">uiOption_createLabAccess</a></li><li><a href="global.html#uiOption_makeBadges">uiOption_makeBadges</a></li><li><a href="global.html#uiOption_returnBaskets">uiOption_returnBaskets</a></li><li><a href="global.html#uiOption_sendBasketRequestEmail">uiOption_sendBasketRequestEmail</a></li><li><a href="global.html#uiOption_sendBuildingAccessEmail">uiOption_sendBuildingAccessEmail</a></li><li><a href="global.html#uiOption_sendQuizEmail">uiOption_sendQuizEmail</a></li><li><a href="global.html#uiOption_sendRequestTrainingEmail">uiOption_sendRequestTrainingEmail</a></li><li><a href="global.html#uiOption_sendTrainingRequestEmailTemplate">uiOption_sendTrainingRequestEmailTemplate</a></li><li><a href="global.html#uiOption_updateActiveUsers">uiOption_updateActiveUsers</a></li><li><a href="global.html#updateActiveUsers">updateActiveUsers</a></li><li><a href="global.html#updateBasketActiveUserStatus">updateBasketActiveUserStatus</a></li><li><a href="global.html#updatePaperAccessForm">updatePaperAccessForm</a></li><li><a href="global.html#updateTrainingDropdown">updateTrainingDropdown</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a>
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

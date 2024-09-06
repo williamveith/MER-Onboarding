@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Classes.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Classes.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @typedef {Object} FormObject
+ * @property {string} inputText - The text input from the form.
+ */
+
+/**
+ * Represents the current instance of a spreadsheet on Form Submit event, handling specific interactions with Google Sheets.
+ */
+class CurrentInstance {
+  /**
+   * Creates an instance of CurrentInstance.
+   * @param {Object} e - The event object from Google Sheets on Form Submit event.
+   */
+  constructor(e) {
+    /** @type {GoogleAppsScript.Spreadsheet.Spreadsheet} */
+    this.spreadsheet = e.source;
+    /** @type {GoogleAppsScript.Spreadsheet.Sheet} */
+    this.sheet = e.range.getSheet();
+    /** @type {GoogleAppsScript.Spreadsheet.Range} */
+    this.range = e.range;
+    /** @type {Array&lt;string|number>} */
+    this.rawValues = e.values;
+    /** @type {Array&lt;string>} */
+    this._headers = new Array();
+    /** @type {Object} */
+    this._formats = {};
+    /** @type {Object} */
+    this._values = {};
+  }
+  /**
+   * Retrieves or generates headers from the first row of the range's sheet.
+   * @returns {Array&lt;string>} An array of headers.
+   */
+  get headers() {
+    if (this._headers.length > 0) {
+      return this._headers;
+    }
+    this._headers.push(...this.sheet.getRange(1, 1, 1, this.rawValues.length).getValues().flat());
+    return this._headers;
+  }
+  /**
+   * Sets format entries for the instance, throwing an error if entries are incorrect.
+   * @param {Array&lt;Object>} entries - An array of objects specifying key and value pairs for formats.
+   */
+  set formats(entries) {
+    if (!entries) {
+      throw new Error('Entries must not be null or undefined');
+    }
+    const entriesArray = Array.isArray(entries) ? entries : [entries];
+    entriesArray.forEach(entry => {
+      if (!entry || !('key' in entry) || !('value' in entry)) {
+        throw new Error('Each entry must be an object with a key and value');
+      }
+      this._formats[entry.key] = new DataFormatter(entry)
+    })
+  }
+  /**
+   * Returns the formats if any are defined.
+   * @returns {Object} An object containing format definitions.
+   */
+  get formats() {
+    if (Object.keys(this._formats).length > 0) {
+      return this._formats;
+    }
+    this.values; // Required to make sure values are initialized
+    return this._formats;
+  }
+  /**
+   * Accepts and sets value entries for the instance, checking headers and applying formats.
+   * @param {Array&lt;Object>} entries - Entries to be set as values.
+   */
+  set values(entries) {
+    if (!entries) {
+      throw new Error('Entries must not be null or undefined');
+    }
+    const entriesArray = Array.isArray(entries) ? entries : [entries];
+    entriesArray.forEach(entry => {
+      if (!entry || !('key' in entry) || !('value' in entry)) {
+        throw new Error('Each entry must be an object with a key and value');
+      }
+      if (!this.headers.includes(entry.key)) {
+        this._headers.push(entry.key);
+      }
+      this.formats = entry;
+      this._values[entry.key] = this.formats[entry.key].useFormattedValue ? this.formats[entry.key].value : entry.value;
+    })
+  }
+  /**
+   * Retrieves or initializes values for the instance based on headers.
+   * @returns {Object} An object containing the values.
+   */
+  get values() {
+    if (Object.keys(this._values).length > 0) {
+      return this._values;
+    }
+    const newEntries = this.headers.map((header, index) => {
+      return { key: header, value: this.rawValues[index] };
+    });
+    this.values = newEntries;
+    return this._values;
+  }
+  /**
+   * Updates the spreadsheet with values and formats according to the instance's settings.
+   */
+  updateSpreadsheet() {
+    const rowNumber = this.range.getRow();
+    this.headers.forEach((header, index) => {
+      const range = this.sheet.getRange(rowNumber, index + 1);
+      this.formats[header].setValue(range);
+    })
+  }
+  /**
+   * Creates a new CurrentInstance from specified sheet and row data, freezing the instance for immutability.
+   * @param {string} sheetName - The name of the sheet to use.
+   * @param {number} [row=2] - The starting row to consider for the instance; defaults to row 2.
+   * @param {number} [columns=undefined] - The number of columns to consider; defaults to all columns.
+   * @returns {CurrentInstance} A new instance of CurrentInstance.
+   */
+  static createEvent(sheetName, row = 2, columns = undefined) {
+    const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = spreadsheet.getSheetByName(sheetName);
+    columns = columns || sheet.getLastColumn();
+    const range = sheet.getRange(row, 1, 1, columns);
+    const e = {
+      source: spreadsheet,
+      sheet: sheet,
+      range: range,
+      values: range.getValues().flat()
+    };
+    return Object.freeze(new CurrentInstance(e));
+  }
+}
+
+/**
+ * Class to format data values based on predefined or dynamic rules and apply formatting to Google Sheets.
+ */
+class DataFormatter {
+  /**
+   * Constructs an instance of DataFormatter.
+   * @param {Object} entry - An object containing the key and value to be formatted.
+   */
+  constructor(entry) {
+    this.header = entry.key;
+    this.rawValue = entry.value;
+    /** TextStyle builder to set common text attributes. */
+    this._textStyle = SpreadsheetApp.newTextStyle()
+      .setFontFamily('Courier New')
+      .setFontSize(11)
+      .setForegroundColor("#000000")
+      .setUnderline(false)
+      .setBold(false)
+      .build();
+    this._useFormattedValue = true;
+    this._urlTemplate = undefined;
+    this._value = undefined;
+    this._numberFormat = undefined;
+    this._textAlignment = undefined;
+    this._url = undefined;
+    this._richTextValue = undefined;
+  }
+  /**
+   * Lazy-loads and returns the formatted value based on the header type and raw value.
+   * Applies custom logic based on the header to determine how the value should be formatted.
+   * @returns {*} The formatted value.
+   */
+  get value() {
+    if (this._value !== undefined) {
+      return this._value;
+    }
+    switch (this.header) {
+      case "First Name":
+      case "Last Name":
+      case "Professor or Supervisor":
+      case "Professor or Company":
+      case "City":
+      case "State":
+        this._value = this.textTransformCapitalize(this.rawValue);
+        this._numberFormat = "@";
+        this._useFormattedValue = true;
+        break;
+      case "Middle Name":
+        this._value = this.rawValue == "N.M.N." ? "N.M.N." : this.textTransformCapitalize(this.rawValue);
+        this._numberFormat = "@";
+        this._useFormattedValue = true;
+        break;
+      case "UT EID":
+        this._value = this.rawValue.toLowerCase().toString();
+        this._numberFormat = "@";
+        this._urlTemplate = 'https://utdirect.utexas.edu/webapps/eidlisting/eid_details?eid={value0}';
+        this._useFormattedValue = true;
+        break;
+      case "Email Address":
+        this._value = this.rawValue.toLowerCase().toString();
+        this._numberFormat = "@";
+        this._useFormattedValue = true;
+        break;
+      case "Phone Number":
+        this._value = this.formatPhoneNumber(this.rawValue);
+        this._numberFormat = "@";
+        this._useFormattedValue = true;
+        break;
+      case "Timestamp":
+        this._value = this.formatTimeStamp(this.rawValue);
+        this._numberFormat = "yyyy-MM-dd HH:mm:ss";
+        this._useFormattedValue = false;
+        break;
+      case "Record Row":
+        this._value = parseInt(this.rawValue);
+        this._numberFormat = "0";
+        this._useFormattedValue = true;
+        break;
+      case "Basket Avaliable":
+      case "User Active":
+        this._value = Boolean(this.rawValue);
+        this._numberFormat = "General"
+        this._useFormattedValue = true;
+        this._textAlignment = "center"
+        break;
+      default:
+        this._value = this.rawValue.toString();
+        this._numberFormat = "@";
+        this._useFormattedValue = true;
+        break;
+    }
+    return this._value;
+  }
+  /**
+   * Determines if the formatted value should be used.
+   * @returns {boolean} True if formatted value should be used, otherwise false.
+   */
+  get useFormattedValue() {
+    return this._useFormattedValue;
+  }
+  /**
+   * Constructs and returns a URL if a URL template is provided.
+   * @returns {string|undefined} The URL or undefined if no template is set.
+   */
+  get url() {
+    if (this._url !== undefined || this._urlTemplate === undefined) {
+      return this._url;
+    }
+    const valueArray = Array.isArray(this.value) ? this.value : [this.value];
+    let urlTemplateCopy = this._urlTemplate;
+    valueArray.forEach((value, index) => {
+      urlTemplateCopy = urlTemplateCopy.replace(`{value${index}}`, encodeURIComponent(value))
+    })
+    this._url = urlTemplateCopy;
+    return this._url;
+  }
+  /**
+   * Returns the number format to be applied to the Google Sheets cell.
+   * @returns {string} The number format.
+   */
+  get numberFormat() {
+    return this._numberFormat === undefined ? "@" : this._numberFormat;
+  }
+  /**
+   * Returns the rich text value for the Google Sheets cell.
+   * @returns {GoogleAppsScript.Spreadsheet.RichTextValue} The rich text formatted value.
+   */
+  get richTextValue() {
+    if (this._richTextValue !== undefined) {
+      return this._richTextValue;
+    }
+    let tempRichTextValue = SpreadsheetApp.newRichTextValue()
+      .setText(this.value)
+      .setTextStyle(this._textStyle);
+    if (this._urlTemplate !== undefined) {
+      tempRichTextValue.setLinkUrl(this.url);
+    }
+    this._richTextValue = tempRichTextValue.build();
+    return this._richTextValue;
+  }
+  /**
+   * Capitalizes each part of the string, used primarily for names.
+   * @param {string} str - The string to capitalize.
+   * @returns {string} The capitalized string.
+   */
+  textTransformCapitalize(str) {
+    const strParts = str.split(/([ \-'"(\/]|[mM]{1}[cC]{1})/gm); // the surrounding () results in strParts containing the delim
+    return strParts.map(part => (`${part.charAt(0).toUpperCase()}${part.slice(1).toLowerCase()}`).replace(/^[mM]{1}[cC]{1}$/gm, "Mc"))
+      .join("") // Puts name back together
+      .replace(/[ ]{2,}/gm, " ") // Replaces 2 or more spaces inside the name with 1 space
+      .trim() // Moves any leading or trailing spaces
+      .toString();
+  }
+  /**
+   * Formats a raw phone number into a standard US phone format.
+   * @param {string|number} number - The raw phone number.
+   * @returns {string} The formatted phone number.
+   */
+  formatPhoneNumber(number) {
+    const phoneNumberString = number.toString();
+    const match = phoneNumberString.replace(/\D/g, '').match(/^(1|)?(\d{3})(\d{3})(\d{4})$/);
+    if (!match) {
+      return phoneNumberString;
+    }
+    return `${match[1] ? '+1 ' : ''}(${match[2]}) ${match[3]}-${match[4]}`;
+  }
+  /**
+   * Formats a raw timestamp into a human-readable date-time format.
+   * @param {string|Date} date - The raw date.
+   * @returns {string} The formatted timestamp.
+   */
+  formatTimeStamp(date) {
+    if (isNaN(new Date(date))) {
+      return date;
+    }
+    return Utilities.formatDate(new Date(date), Session.getScriptTimeZone(), "yyyy-MM-dd HH:mm:ss")
+  }
+  /**
+   * Sets the value and formatting options on a given Google Sheets range.
+   * @param {GoogleAppsScript.Spreadsheet.Range} range - The cell range to format.
+   */
+  setValue(range) {
+    range.setRichTextValue(this.richTextValue);
+    range.setNumberFormat(this.numberFormat);
+    range.setHorizontalAlignment(this._textAlignment || "left");
+  }
+}
+
+/**
+ * Manages the creation and destruction of script triggers based on calendar events.
+ */
+class EventTrigger {
+  /**
+   * Constructs an instance of EventTrigger.
+   *  @param {GoogleAppsScript.Calendar.CalendarEvent|Object} calendarEvent - The calendar event to base the trigger on. Can be from CalendarApp or the Calendar API.
+   */
+  constructor(calendarEvent) {
+    /**
+     * Access to script properties for storing and retrieving custom event data.
+     * @type {GoogleAppsScript.Properties.Properties}
+     */
+    this.scriptProperties = PropertiesService.getScriptProperties();
+    /**
+     * The millisecond timestamp when the calendar event ends.
+     * @type {number}
+     */
+    this.endTime = calendarEvent.getEndTime ? calendarEvent.getEndTime().getTime() : new Date(calendarEvent.end.dateTime).getTime();
+  }
+  /**
+   * Retrieves the unique key for the current event based on its end time.
+   * @returns {string} The unique key representing the event.
+   */
+  get key() {
+    return this.endTime.toString();
+  }
+  /**
+   * Checks if a trigger already exists for this calendar event.
+   * @returns {boolean} True if a trigger exists, false otherwise.
+   */
+  get exists() {
+    return this.scriptProperties.getProperty(this.key) !== null;
+  }
+  /**
+   * Creates a new trigger for the calendar event if it doesn't already exist.
+   * The trigger is set to execute a function specified in CONFIGS.Triggers.QuizSend after the event ends.
+   */
+  create() {
+    if (!this.exists) {
+      const triggerId = ScriptApp.newTrigger(CONFIGS.Triggers.QuizSend)
+        .timeBased()
+        .after(this.endTime - new Date().getTime())
+        .create()
+        .getUniqueId();
+      this.scriptProperties.setProperty(this.key, triggerId); // Use this.scriptProperties
+    }
+  }
+  /**
+   * Destroys the existing trigger associated with the calendar event, if any.
+   * It removes the trigger from the project and deletes the associated property.
+   */
+  destroy() {
+    if (!this.exists) {
+      return;
+    }
+    const triggerId = this.scriptProperties.getProperty(this.key);
+    const triggers = ScriptApp.getProjectTriggers();
+    for (let trigger of triggers) {
+      if (trigger.getUniqueId() === triggerId) {
+        ScriptApp.deleteTrigger(trigger);
+        this.scriptProperties.deleteProperty(this.key);
+        break;
+      }
+    }
+  }
+}
+
+/**
+ * Manages lab access data, dynamically generates and stores credentials and access times.
+ */
+class LabAccess {
+  /**
+   * Initializes a new instance of LabAccess with a given CurrentInstance.
+   * @param {CurrentInstance} currentInstance - The current instance containing initial lab access data.
+   */
+  constructor(currentInstance) {
+    this.currentInstance = currentInstance;
+    /**
+     * Stores dynamic data derived from the current instance, including computed properties like username and access credentials.
+     */
+    this._dynamicData = {
+      "Timestamp": currentInstance.values["Timestamp"],
+      "UT EID": currentInstance.values["UT EID"],
+      "Professor or Company": currentInstance.values["Professor or Company"],
+      "Name": `${currentInstance.values["First Name"]} ${currentInstance.values["Last Name"]}`,
+      "Phone Number": currentInstance.values["Phone Number"],
+      "Email Address": currentInstance.values["Email Address"],
+      "Username": `${currentInstance.values["First Name"].replace(/[^a-zA-Z]/gm, "")}_${currentInstance.values["Last Name"].replace(/[^a-zA-Z]/g, "")}`.toLowerCase(),
+      "Password": undefined,
+      "Sedona": undefined,
+      "Activation Date": undefined
+    }
+  }
+  /**
+   * Gets the full name of the individual.
+   * @returns {string} The concatenated first and last name.
+   */
+  get name() {
+    return this._dynamicData["Name"]
+  }
+  /**
+   * Lazily generates and retrieves a password for lab access.
+   * @returns {string} The generated or stored password.
+   */
+  get password() {
+    if (this._dynamicData["Password"] === undefined) {
+      const credential = new CredentialGenerator(CONFIGS.Drive.WordList);
+      const password = credential.generate(credential.type.Passphrase, 2);
+      this._dynamicData["Password"] = password;
+      this.currentInstance.values = { key: "Password", value: password }
+      this.currentInstance.updateSpreadsheet()
+    }
+    return this._dynamicData["Password"]
+  }
+  /**
+   * Constructs and retrieves a JSON object for the Sedona system setup.
+   * @returns {string} A JSON string representing user credentials and access data for Sedona.
+   */
+  get sedona() {
+    if (this._dynamicData["Sedona"] === undefined) {
+      this._dynamicData["Sedona"] = JSON.stringify({
+        'jform_name': this._dynamicData["Name"],
+        'jform_username': this._dynamicData["Username"],
+        'jform_password': this.password,
+        'jform_password2': this.password,
+        'jform_email': this._dynamicData["Email Address"],
+      })
+    }
+    return this.dynamicData["Sedona"]
+  }
+  /**
+   * Lazily computes and retrieves the activation date for the lab access.
+   * @returns {string} The formatted date string when access becomes active.
+   */
+  get activationDate() {
+    if (this._dynamicData["Activation Date"] === undefined) {
+      const today = new Date();
+      const daysLeftInWeek = 7 - today.getDay();
+      const activeDay = daysLeftInWeek > 2 ? today.setDate(today.getDate() + 1) : today.setDate(today.getDate() + (daysLeftInWeek + 1));
+      const date = new Date(new Date(activeDay).setHours(13, 0, 0));
+      this._dynamicData["Activation Date"] = Utilities.formatDate(date, Session.getScriptTimeZone(), "yyyy-MM-dd HH:mm");
+    }
+    return this._dynamicData["Activation Date"];
+  }
+  /**
+   * Computes the start and end times for lab access based on the activation date.
+   * @returns {Date[]} An array containing start and end Date objects.
+   */
+  get startAndEndTime() {
+    const start = new Date(this.activationDate);
+    const end = new Date(start.getTime() + 10 * 60 * 1000);
+    return [start, end];
+  }
+  /**
+   * Retrieves all dynamic data, ensuring all lazy properties are initialized.
+   * @returns {Object} The dynamic data for this lab access.
+   */
+  get dynamicData() {
+    if (this._dynamicData["Password"] === undefined) {
+      this.password
+    }
+    if (this._dynamicData["Sedona"] === undefined) {
+      this.sedona
+    }
+    if (this._dynamicData["Activation Date"] === undefined) {
+      this.activationDate
+    }
+    return this._dynamicData
+  }
+}
+
+/**
+ * A class for generating various types of credentials, such as usernames, passwords, and passphrases.
+ * This class encapsulates the logic for generating random credentials based on a word list and character pool.
+ */
+class CredentialGenerator {
+  /**
+   * Creates an instance of CredentialGenerator.
+   * @param {string|undefined} wordListFileId - The Google Drive file ID of the word list JSON file, or undefined if no ID is provided.
+   * If provided, the word list will be loaded from the specified file.
+   */
+  constructor(wordListFileId = undefined) {
+    try {
+      /**
+       * The file ID of the word list JSON file.
+       * @type {string|undefined}
+       * @private
+       */
+      this._wordListFileId = wordListFileId;
+      /**
+       * The array of words used for generating passphrases.
+       * @type {string[]|undefined}
+       * @private
+       */
+      this._wordList = wordListFileId === undefined ? wordListFileId : JSON.parse(DriveApp.getFileById(wordListFileId).getBlob().getDataAsString());
+      /**
+       * An array of special characters, numbers, and letters used for generating passwords.
+       * @type {string[]}
+       * @private
+       */
+      this._characters = (() => {
+        const specialCharacters = ["!", "@", "#", "^", "&amp;", "*"];
+        const numbers = [...Array(10).keys()];
+        const letters = (() => {
+          const caps = [...Array(26)].map((value, index) => String.fromCharCode(index + 65));
+          return caps.concat(caps.map(letter => letter.toLowerCase()));
+        })();
+        return [...specialCharacters, ...numbers, ...letters];
+      })();
+      /**
+       * An enum-like object representing the types of credentials that can be generated.
+       * @readonly
+       * @type {object}
+       * @property {Symbol} Username - Represents a username.
+       * @property {Symbol} Password - Represents a password.
+       * @property {Symbol} Passphrase - Represents a passphrase.
+       */
+      this.type = Object.freeze({
+        Username: Symbol("username"),
+        Password: Symbol("password"),
+        Passphrase: Symbol("passphrase")
+      });
+    } catch (error) {
+      console.error('Error initializing CredentialGenerator:', error.message);
+      this._wordList = undefined;
+    }
+  }
+  /**
+   * Sanitizes a length value to ensure it's non-negative.
+   * @param {number} length - The input length value.
+   * @returns {number} - The sanitized length value.
+   */
+  _sanitizeLength(length) {
+    return length >= 0 ? Math.round(length) : 0;
+  }
+  /**
+   * Generates a random array by selecting random elements from an item array.
+   * @param {Array} itemArray - The array of items to select random elements from.
+   * @param {number|undefined} [length] - The length of the random array (optional).
+   * @returns {Array} - The generated random array.
+   */
+  _getRandomArray(itemArray = [], length = undefined) {
+    const sanitizeLength = this._sanitizeLength(length);
+    const randomArray = new Array(sanitizeLength);
+    const itemArrayLength = itemArray.length;
+    for (let i = 0; i &lt; sanitizeLength; i++) {
+      randomArray[i] = itemArray[Math.floor(Math.random() * itemArrayLength)];
+    }
+    return randomArray;
+  }
+  /**
+   * Generates a random word from the word list.
+   * @returns {string} - A random word or 'Word List Missing' if the word list is undefined.
+   */
+  get randomWord() {
+    if (this._wordList === undefined) {
+      console.error('Word List Missing');
+      return 'Word List Missing';
+    }
+    return this._wordList[Math.floor(Math.random() * this._wordList.length)];
+  }
+  /**
+   * Generates a random character from the character pool.
+   * @returns {string} - A random character.
+   */
+  get randomCharacter() {
+    return this._characters[Math.floor(Math.random() * this._characters.length)];
+  }
+  /**
+   * Updates the word list property.
+   * @param {string|string[]} wordListOrListFileId - The new word list or file ID of a word list JSON file.
+   */
+  set updateWordList(wordListOrListFileId) {
+    if (typeof wordListOrListFileId === "string") {
+      this._wordList = JSON.parse(DriveApp.getFileById(wordListOrListFileId).getBlob().getDataAsString());
+      this._wordListFileId = wordListOrListFileId;
+    }
+    else if (Array.isArray(wordListOrListFileId)) {
+      this._wordList = wordListOrListFileId;
+      this._wordListFileId = undefined;
+    } else {
+      console.log(`Word list not updated. Input was neither a file ID or array of words`)
+    }
+  }
+  /**
+   * Generates a random number with a specified length.
+   * @param {number} length - The length of the random number.
+   * @returns {number} - The generated random number.
+   */
+  getRandomNumber(length) {
+    const sanitizeLength = this._sanitizeLength(length);
+    return Math.floor(Math.pow(10, sanitizeLength - 1) + Math.random() * (Math.pow(10, sanitizeLength) - Math.pow(10, sanitizeLength - 1) - 1));
+  }
+  /**
+   * Generates a credential of the specified type and length.
+   * @param {symbol} type - The type of credential (Username, Password, or Passphrase).
+   * @param {number} [length] - The length of the credential (optional).
+   * @returns {string} - The generated credential.
+   */
+  generate(type = this.type[Object.keys(this.type)[0]], length = undefined) {
+    switch (type) {
+      case this.type.Username:
+        const randomWord = this.randomWord;
+        return `${randomWord.charAt(0).toUpperCase()}${randomWord.slice(1)}${this.getRandomNumber(4)}`;
+      case this.type.Password:
+        const passwordArray = this._getRandomArray(this._characters, length);
+        return passwordArray.join('');
+      case this.type.Passphrase:
+        const passphraseArray = this._getRandomArray(this._wordList, length);
+        return passphraseArray.join('-');
+    }
+  }
+}
+
+/**
+ * Class to manage basket exemptions.
+ */
+class BasketExemption {
+  /**
+   * Creates an instance of BasketExemption.
+   * @param {string} [fileId=CONFIGS.Drive.BasketExemptions] - The file ID for the basket exemptions JSON file.
+   */
+  constructor(fileId = CONFIGS.Drive.BasketExemptions) {
+    /**
+     * Types of users with their labels and exemption periods in months.
+     * @type {Object}
+     */
+    this.type = {
+      Staff: { label: "Staff", period: 600 },
+      Professor: { label: "Professor", period: 24 },
+      Company: { label: "Company", period: 24 },
+      Student: { label: "Student", period: 6 }
+    };
+    /**
+     * The file ID for the basket exemptions JSON file.
+     * @type {string}
+     * @private
+     */
+    this._fileId = fileId;
+    /**
+     * The Google Drive file object for the basket exemptions JSON file.
+     * @type {GoogleAppsScript.Drive.File}
+     * @private
+     */
+    this._file = undefined;
+    /**
+     * The users' exemption data.
+     * @type {Object}
+     * @private
+     */
+    this._users = undefined;
+  }
+
+  /**
+   * Sets the file object for the basket exemptions JSON file.
+   * @param {GoogleAppsScript.Drive.File} file - The Google Drive file object.
+   */
+  set file(file) {
+    this._file = file;
+    this._fileId = file.getId()
+  }
+
+  /**
+   * Gets the file object for the basket exemptions JSON file. If the file does not exist, creates a new one.
+   * @returns {GoogleAppsScript.Drive.File} The Google Drive file object.
+   */
+  get file() {
+    if (this._file !== undefined) {
+      return this._file
+    }
+    try {
+      this._file = DriveApp.getFileById(this._fileId)
+    } catch (e) {
+      Logger.log("Basket Exemption File Does Not Exist. Creating new file")
+      const rootFolder = DriveApp.getFileById(SpreadsheetApp.getActiveSpreadsheet().getId()).getParents().next();
+      this.file = rootFolder.createFile('basket-exemptions.json', JSON.stringify({}), 'application/json')
+    }
+    return this._file;
+  }
+
+  /**
+   * Sets the users' exemption data.
+   * @param {Object} users - The users' exemption data.
+   */
+  set users(users) {
+    this._users = users
+  }
+
+  /**
+   * Gets the users' exemption data.
+   * @returns {Object} The users' exemption data.
+   */
+  get users() {
+    if (this._users !== undefined) {
+      return this._users;
+    }
+    this.users = JSON.parse(this.file.getBlob().getDataAsString());
+    return this._users;
+  }
+
+  /**
+   * Gets a list of users with basket exemptions.
+   * @returns {Array&lt;string>} An array of usernames with basket exemptions.
+   */
+  get exemptUsers() {
+    this.update()
+    return Object.keys(this.users)
+  }
+
+  /**
+   * Calculates the expiration date for an exemption.
+   * @param {Object} type - The type of user with a label and period.
+   * @param {Date} [date=new Date()] - The starting date for the exemption.
+   * @returns {number} The timestamp of the expiration date.
+   */
+  getExpiration(type, date = new Date()) {
+    return date.setMonth(date.getMonth() + type.period);
+  }
+
+  /**
+   * Updates the exemption file with the current instances values.
+   */
+  save() {
+    const sortedObj = {};
+    Object.keys(this.users).sort().forEach(key => {
+      sortedObj[key] = this.users[key];
+    });
+    this.file.setContent(JSON.stringify(sortedObj, null, 2))
+  }
+
+  /**
+   * Adds a new user to the exemption list.
+   * @param {string} fullName - The full name of the user.
+   * @param {Object} [type=this.type.Student] - The type of user with a label and period.
+   * @param {Date} [date=new Date()] - The starting date for the exemption.
+   */
+  add(fullName, type = this.type.Student, date = new Date()) {
+    const newUser = {
+      type: type.label,
+      expires: this.getExpiration(type, date)
+    }
+    this.users[fullName] = newUser
+    this.save();
+  }
+  
+  /**
+   * Updates the exemption list by removing expired users.
+   */
+  update() {
+    const today = new Date().getTime()
+    for (let user in this.users) {
+      if (this.users[user].expires &lt; today) {
+        delete this.users[user];
+      }
+    }
+    this.save();
+  }
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BasketExemption.html">BasketExemption</a></li><li><a href="CredentialGenerator.html">CredentialGenerator</a></li><li><a href="CurrentInstance.html">CurrentInstance</a></li><li><a href="DataFormatter.html">DataFormatter</a></li><li><a href="EventTrigger.html">EventTrigger</a></li><li><a href="LabAccess.html">LabAccess</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CONFIGS">CONFIGS</a></li><li><a href="global.html#addBasketExemptions">addBasketExemptions</a></li><li><a href="global.html#addToTrainingEvent">addToTrainingEvent</a></li><li><a href="global.html#assignBasket">assignBasket</a></li><li><a href="global.html#createOneOffLabAccess">createOneOffLabAccess</a></li><li><a href="global.html#createPaperBuildingAccessForm">createPaperBuildingAccessForm</a></li><li><a href="global.html#createPaperBuildingAccessForm1">createPaperBuildingAccessForm1</a></li><li><a href="global.html#createUserInput">createUserInput</a></li><li><a href="global.html#doGet">doGet</a></li><li><a href="global.html#doGetHtmlBadges">doGetHtmlBadges</a></li><li><a href="global.html#emailAccessControlForm">emailAccessControlForm</a></li><li><a href="global.html#emailCleanroomSupplies">emailCleanroomSupplies</a></li><li><a href="global.html#emailQuizResults">emailQuizResults</a></li><li><a href="global.html#generateBasketQRCode">generateBasketQRCode</a></li><li><a href="global.html#getAllStudents">getAllStudents</a></li><li><a href="global.html#getBadgeRows">getBadgeRows</a></li><li><a href="global.html#makeBadgeString">makeBadgeString</a></li><li><a href="global.html#makeBadges">makeBadges</a></li><li><a href="global.html#onFormSubmission">onFormSubmission</a></li><li><a href="global.html#openUtilitiesWindow">openUtilitiesWindow</a></li><li><a href="global.html#passedQuiz">passedQuiz</a></li><li><a href="global.html#processEmailAddressInput">processEmailAddressInput</a></li><li><a href="global.html#processRowNumberInput">processRowNumberInput</a></li><li><a href="global.html#returnBasket">returnBasket</a></li><li><a href="global.html#returnBaskets">returnBaskets</a></li><li><a href="global.html#saveLabAccessAccountCreateToCalendar">saveLabAccessAccountCreateToCalendar</a></li><li><a href="global.html#saveToCalendar">saveToCalendar</a></li><li><a href="global.html#saveVCard">saveVCard</a></li><li><a href="global.html#sendBasketEmail">sendBasketEmail</a></li><li><a href="global.html#sendBasketRequestEmail">sendBasketRequestEmail</a></li><li><a href="global.html#sendBuildingAccessEmail">sendBuildingAccessEmail</a></li><li><a href="global.html#sendLabAccessConfirmation">sendLabAccessConfirmation</a></li><li><a href="global.html#sendLabAccessText">sendLabAccessText</a></li><li><a href="global.html#sendOneOffQuizEmail">sendOneOffQuizEmail</a></li><li><a href="global.html#sendPurgeWarningForm">sendPurgeWarningForm</a></li><li><a href="global.html#sendRequestTrainingEmail">sendRequestTrainingEmail</a></li><li><a href="global.html#sendTrainingGroupQuiz">sendTrainingGroupQuiz</a></li><li><a href="global.html#sendTrainingRequestEmailTemplate">sendTrainingRequestEmailTemplate</a></li><li><a href="global.html#submitLabAccessForm">submitLabAccessForm</a></li><li><a href="global.html#uiOption_addBasketExemptions">uiOption_addBasketExemptions</a></li><li><a href="global.html#uiOption_createBuildingAccessForm">uiOption_createBuildingAccessForm</a></li><li><a href="global.html#uiOption_createLabAccess">uiOption_createLabAccess</a></li><li><a href="global.html#uiOption_makeBadges">uiOption_makeBadges</a></li><li><a href="global.html#uiOption_returnBaskets">uiOption_returnBaskets</a></li><li><a href="global.html#uiOption_sendBasketRequestEmail">uiOption_sendBasketRequestEmail</a></li><li><a href="global.html#uiOption_sendBuildingAccessEmail">uiOption_sendBuildingAccessEmail</a></li><li><a href="global.html#uiOption_sendQuizEmail">uiOption_sendQuizEmail</a></li><li><a href="global.html#uiOption_sendRequestTrainingEmail">uiOption_sendRequestTrainingEmail</a></li><li><a href="global.html#uiOption_sendTrainingRequestEmailTemplate">uiOption_sendTrainingRequestEmailTemplate</a></li><li><a href="global.html#uiOption_updateActiveUsers">uiOption_updateActiveUsers</a></li><li><a href="global.html#updateActiveUsers">updateActiveUsers</a></li><li><a href="global.html#updateBasketActiveUserStatus">updateBasketActiveUserStatus</a></li><li><a href="global.html#updatePaperAccessForm">updatePaperAccessForm</a></li><li><a href="global.html#updateTrainingDropdown">updateTrainingDropdown</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a>
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
