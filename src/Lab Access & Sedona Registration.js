@@ -29,13 +29,27 @@ function saveLabAccessAccountCreateToCalendar(labAccessInstance) {
 function sendLabAccessText(labAccessInstance) {
   let template = CONFIGS.Templates.get(CONFIGS.Templates.LabAccessText);
   template.dynamicData = labAccessInstance.dynamicData;
+  const htmlMessage = template.evaluate().getContent()
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/?div[^>]*>/gi, '')       // Strip divs
+    .replace(/<\/?span[^>]*>/gi, '')      // Strip spans
+    .replace(/<\/?p[^>]*>/gi, '')         // Strip <p> tags
+    .replace(/\n{2,}/g, '\n');            // Collapse multiple newlines
 
-  // Send the email with the dynamically generated content
-  GmailApp.sendEmail(CONFIGS.Email.Phone, "New User Setup", "", {
-    from: CONFIGS.Email.William,
-    htmlBody: template.evaluate().getContent(),
-    name: "New User Setup"
-  });
+  const url = `https://api.telegram.org/bot7882349386:AAHFY6yIMrWLO0FHTRbBFPbADso5BLcH424/sendMessage`;
+  const payload = {
+    chat_id: "7674958112",
+    text: htmlMessage,
+    parse_mode: "HTML"
+  };
+
+  const options = {
+    method: "post",
+    contentType: "application/json",
+    payload: JSON.stringify(payload)
+  };
+
+  UrlFetchApp.fetch(url, options);
 }
 
 /**

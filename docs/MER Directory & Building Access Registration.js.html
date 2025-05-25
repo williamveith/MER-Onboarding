@@ -92,7 +92,7 @@ function saveToCalendar(currentInstance) {
 
   // Create the calendar event with a specified title, time, and additional details.
   CONFIGS.Calendar.get().createEvent(title, start, end, {
-    description: `Security Center: https://gsc-web.austin.utexas.edu/securitycenter/#/accessconfiguration/cardholders\n\nEID: ${currentInstance.values["UT EID"]}`
+    description: `Security Center: https://cdn.williamveith.com/?id=97a98e91-d84d-421f-8a61-b9c070f8ff65\n\nEID: ${currentInstance.values["UT EID"]}`
   }).setColor(CalendarApp.EventColor.CYAN)
     .addPopupReminder(15);
 }

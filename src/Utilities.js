@@ -181,7 +181,7 @@ function createUserInput(functionName) {
  */
 function processRowNumberInput(formObject, sheetName) {
   Logger.log(formObject)
-  const input = formObject.inputText.replace(" ",);
+  const input = formObject.inputText.replace(/\s+/g, ""); // CHANGED FROM const input = formObject.inputText.replace(" ",);
   const rows = input.split(/,/).map(rowNumber => {
     if (rowNumber.includes("-")) {
       const startEnd = rowNumber.split(/-/);

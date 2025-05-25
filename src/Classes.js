@@ -183,6 +183,11 @@ class DataFormatter {
         this._numberFormat = "@";
         this._useFormattedValue = true;
         break;
+      case "UT ID":
+        this._value = this.rawValue.toFixed(0);
+        this._numberFormat = "@";
+        this._useFormattedValue = true;
+        break;
       case "UT EID":
         this._value = this.rawValue.toLowerCase().toString();
         this._numberFormat = "@";

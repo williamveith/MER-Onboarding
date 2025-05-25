@@ -1,0 +1,18 @@
+{
+    "source": {
+      "include": ["./src"],
+      "includePattern": ".+\\.js(doc|x)?$",
+      "excludePattern": "(^|\\/|\\\\)_"
+    },
+    "opts": {
+      "destination": "./docs",
+      "recurse": true,
+      "readme": "README.md"
+    },
+    "templates": {
+      "default": {
+        "includeDate": false
+      }
+    }
+  }
+  
